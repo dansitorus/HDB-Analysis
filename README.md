@@ -7,4 +7,5 @@
 - Geospatial Mapping: Town locations in Singapore were plotted using ggmap, with longitude and latitude converted to numeric. The town names were standardized to lowercase for seamless merging.
 - Visualization
 Four maps were generated to visualize the evolution of resale prices across different locations in Singapore over time.
-This dataset is now optimized for detailed analysis and visualization, providing a solid foundation for exploring trends in HDB resale prices.
+This dataset is now optimized for detailed analysis and visualization, providing a solid foundation for exploring trends in HDB resale prices and is shown below.
+
