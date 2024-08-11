@@ -1,4 +1,4 @@
-# Exploratory Analysis 
+#  Analysis 
 ## Data Cleaning & Cleaning
 
 - Data Merging: The dataset was split due to varying variables over time (2015-2016 and 2017-2024) and was merged after standardizing columns. A new column for remaining lease was calculated and added back to the dataset.
@@ -8,4 +8,15 @@
 - Visualization
 Four maps were generated to visualize the evolution of resale prices across different locations in Singapore over time.
 This dataset is now optimized for detailed analysis and visualization, providing a solid foundation for exploring trends in HDB resale prices and is shown below.
+
+# Exploratory Analysis
+## Line Plot of Resale Market and GDP
+- The graph below shows the trend and increase in HDB resale prices and GDP per capita of Singapore over the years.
+- A correlation can be seen as both graphs are on an upward trend
+
+## Bar plot of Flats sold by Flat Type and Average price of HDB Models
+- The average price of types HDB models can be seen below with Type S2 being the most expensive model. The different layout or corner units can often fetch an increased price and investors or buyers should evaluate the differences before making any decsions. 
+- From the graph below, different kinds of number of HDB flat models sold can be seen and is ranked by popularity. 4 room and 3 room flats are in the most demand over the years.
+
+## Map Plot from 1990-2024
 
