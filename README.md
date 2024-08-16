@@ -8,6 +8,8 @@
 - Visualization
 Four maps were generated to visualize the evolution of resale prices across different locations in Singapore over time.
 This dataset is now optimized for detailed analysis and visualization, providing a solid foundation for exploring trends in HDB resale prices and is shown below.
+![Screenshot 2024-08-11 163105](https://github.com/user-attachments/assets/d966b7eb-591c-4344-aa7d-7928f65a4180)
+
 
 # Exploratory Analysis
 ## Line Plot of Resale Market and GDP
