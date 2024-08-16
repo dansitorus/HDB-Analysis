@@ -1,0 +1,572 @@
+---
+title: "The Singapore HDB Resale Market: 1990-2024"
+author: "Daniel Christian Sitorus"
+date: "2024-03-05"
+output: word_document
+---
+# Executive Summary
+
+The Housing and Development Board (HDB) resale market in Singapore is explored in this report. An analysis of the market prices and trends is focused on which is found in the dataset. Location is a massive factor of each town in Singapore and it affects the prices of HDBs. Interesting insights found is also explored in this report, making buyers and sellers make better decisions. 
+
+## Overview of Data 
+
+Over 900,000 observations were in the data from 1990-2024. Cleaning and data wrangling was done to ensure that the data is suitable for plotting. Steps included merging, adjusting variables and changing the format of columns were done to improve analysis. Spatial analysis using the ggmap function was used to visualise the distribution in resale price across the different locations. Implications within the data were then found and explored as well. 
+
+## Insights from Exploratory Analysis
+
+The exploratory analysis done with the data revealed interesting trends and factors in the HDB resale price. Positive correlation with Singapore's GDP per capita and resale price was found. Additionally, the type of flat model, storey range, area, and location all had a significant impact. The map that was produced also highlighted the disparities in resale price with locations near the central area and the east fetching a higher price. 
+
+## Implication and Future Outlook
+
+Government plans to build offices and homes near Jurong Lake District in the next 10-15 years could impact future prices. As relocation patterns are expected to shift throughout Singapore, understanding these factors is crucial for residents and investors. External developments are a key factor and by having a better understanding, it would be easier to predict future outlooks in the HDB market. 
+
+## Conclusion
+
+In conclusion, the analysis of the dataset explored the dynamics of geographic and variations in the HDB market. Insights gained from this report can help stakeholders better navigate the HDB market and make better and more informed decisions. Understanding that there are plenty of factors to account for will be important. By continuing to monitor these trends, we can better adapt towards changes and it will be essential in the HDB market.
+
+
+
+
+# Introduction
+  The objective of this report is to analyse the Housing and Development Board (HDB) resale prices in Singapore. The HDB resale market in Singapore has been on an upward trend throughout 1990-2024 with there being fluctuations throughout. This report focuses on an overview of the HDB resale price and diving into interesting insights found within the dataset. Outside implications such as the Government looking to build new office towers near Jurong Lake District are also explored in this report. Key areas in Singapore and how prices stayed relevant in places like Bukit Timah is analysed as well. By examining these datasets, we can gain a strong understanding of the HDB resale market and price in Singapore. 
+
+A summary of the dataset examined is that the HDB resale market is on an increasing trend, and it is correlated with Singapore’s increase in GDP per capita. A variation of different flat models also reveals different pricing points of the resale price. Certain flat models can have a higher price as they have different areas and a different number of rooms. An increase in storey range also affects the pricing of the flats. The 4-room flat type was also the most popular type being sold while the multi-generation was the least.  A spatial analysis is also done using a ggmap of Singapore which shows the difference between resale prices of each town in Singapore. Bukit Timah emerged as the most expensive location for HDB resale prices and thus an in-depth analysis of Bukit Timah is done. It shows that the Improved flat model sold the most in that area but the average resale price of Improved is not the highest compared to other areas. With the government planning to move offices to Jurong Lake District, we have found factors that people might want to consider in moving if they stayed in the East and plan to move closer to Jurong. The resale prices of the west from 2020-2023 is cheaper than the East. If people choose to move, prices of HDB will increase as demand is higher. 
+
+In conclusion, HDB resale prices are influenced by a economic and geographic locations. Understanding these factors could be crucial for investors, residents and policymakers before making informed decisions. The Spatial analysis also highlights the disparities in prices across the different towns in Singapore with Bukit Timah emerging as the highest average resale price. Flat models may dominate in specific areas, but they do not align with the resale price trends. External developments should also be considered as they impact potential pricing on the HDB market. Ultimately, investors and residents can make more informed decisions with the insights gained from this analysis.
+
+
+```{r library, include=FALSE}
+library(tibble)
+library(dplyr)
+library(tidyverse)
+library(gapminder)
+library(ggplot2)
+library(tidyr)
+library(gganimate)
+library(transformr)
+library(socviz)
+library(png)
+library(gifski)
+library(av)
+library(readxl)
+library(lubridate)
+library(zoo)
+library(scales)
+library(readr)
+library(tidyverse)
+library(socviz)
+library(ggthemes)
+library(ggmap) 
+library(sp) 
+library(broom) 
+library(sf)  
+library(leaflet) 
+library(geojsonsf) 
+library(tidygeocoder)
+library(ggrepel)
+library(jsonlite) 
+library(httr) 
+```
+
+
+```{r read files, include=FALSE}
+
+ds1990 = read.csv("C:\\Users\\user\\Downloads\\ResaleFlatPricesBasedonApprovalDate19901999.csv")
+ds1990
+
+ds2000 = read.csv("C:\\Users\\user\\Downloads\\ResaleFlatPricesBasedonApprovalDate2000Feb2012.csv")
+ds2000
+
+ds2012 = read.csv("C:\\Users\\user\\Downloads\\ResaleFlatPricesBasedonRegistrationDateFromMar2012toDec2014.csv") 
+ds2012
+
+ds2015 = read.csv("C:\\Users\\user\\Downloads\\ResaleFlatPricesBasedonRegistrationDateFromJan2015toDec2016.csv")
+ds2015
+
+ds2017 = read.csv("C:\\Users\\user\\Downloads\\ResaleflatpricesbasedonregistrationdatefromJan2017onwards.csv")
+ds2017
+
+sgdgdp = read_excel("C:\\Users\\user\\Downloads\\Singapore GDP.xlsx")
+```
+# Data
+
+The HDB data set has over 900000+ observations and 12 columns but the data set has been cleaned and new columns have been formed to make it 14 columns. The data set spans from 1990-2024 and had been split into 4 different data. From 2015-2016 and 2017-2024, different variables were included and thus merging them directly was not possible. The extra variable that it had was dropped before using the Merged function so that all the HDB data set could merge together. The column that was dropped was the remaining lease. A mutate function was used on the data set by subtracting 99 with the year - the lease commence date to make a new column. This was then added back to the merged dataset. The month column was also not in Date format as it only had the year and the month. The format of the month was changed to the Date format by making it into a character and the quality of the data set is better for plotting. A "Year" column was also added to the dataset for more clarity and ease of plotting. Under the variable, flat model, a quality check was done to ensure that the same variable was not separated into different models resulting in a loss in quality. A change in the flat models naming as well to make it all small letters to make it easier for readability. The TO for storey range was also changed to "-" instead. After improving and cleaning, the quality of the data set is better for plotting and analysis with improved consistency as well.
+
+The ggmap function was used to get the Singapore map. A Google search of the towns in Singapore was done to obtain the longitude and latitude. The towns are then plotted out in the Singapore map. The longitude and latitude had to be changed to numeric. As the dataset provided for towns were all in uppercase, a change to make them all in lowercase was used and a mutate function could then join the dataset together. 4 maps are produced with them showing the changes over time and how the resale price has evolved within different locations. 
+
+Overall, the information offers an overview of the data and the process that it has undergone. The data is now better suited for further analysis and a thorough exploration of the data can proceed.
+
+
+
+
+
+```{r Cleaning, include=FALSE}
+# Droppping the lease column 
+droppedlease2017 = ds2017$remaining_lease
+
+ds2017 = ds2017 [, !names(ds2017) %in% "remaining_lease", drop = FALSE]
+droppedlease2015 = ds2015$remaining_lease
+
+ds2015 = ds2015 [, !names(ds2015) %in% "remaining_lease", drop = FALSE]
+
+Merged = bind_rows(ds1990, ds2000, ds2012, ds2015, ds2017)
+
+# Changing the date format
+Merged$month <- as.character(Merged$month)
+
+Merged$month <- parse_date(Merged$month, format = "%Y-%m")
+
+# adding back the remaining lease
+Merged = mutate(Merged, Year = year(as.Date(month)))
+
+Merged = Merged %>%
+  mutate(leaseremain = 99 - (`Year` - `lease_commence_date`))
+
+# Changing the flat type name
+unique(Merged$flat_type)
+Merged <- Merged %>%
+  mutate(flat_type = tolower(flat_type),  
+         flat_type = trimws(flat_type),  
+         flat_type = if_else(flat_type %in% c("multi generation", "multi-generation"),
+                             "multi-generation", flat_type))  
+Merged = Merged %>%
+  mutate(flat_model = tolower(flat_model),  
+         flat_model = trimws(flat_model),    
+         flat_model = gsub("-", " ", flat_model),  
+         flat_model = gsub("apartment", "Apartment", flat_model),  
+         flat_model = gsub("maisonette", "Maisonette", flat_model),  
+         flat_model = gsub("adjoined flat", "Adjoined flat", flat_model),  
+         flat_model = gsub("multi generation", "Multi Generation", flat_model),  
+         flat_model = gsub("dbss", "DBSS", flat_model),  
+         flat_model = gsub("type s1", "Type S1", flat_model),  
+         flat_model = gsub("type s2", "Type S2", flat_model),  
+         flat_model = gsub("3gen", "3Gen", flat_model),  
+         flat_model = gsub("premium apartment loft", "Premium Apartment Loft", flat_model))
+
+#changing the "TO"
+Merged = Merged %>%
+  mutate(storey_range = trimws(storey_range),    
+         storey_range = gsub(" TO ", "-", storey_range))
+
+# grouping the floors
+breaks = c(0, 50, 100, Inf)
+Merged$floor_area_group = cut(Merged$floor_area_sqm, breaks, labels = c("0-50", "50-100", "100+"))
+
+# Grouping the storey range
+group_storey = function(storey_range) {
+  storey_range_numeric <- as.numeric(gsub("-.*", "", storey_range))
+  if (storey_range_numeric <= 10) {
+    return("01-10")
+  } else if (storey_range_numeric <= 20) {
+    return("11-20")
+  } else {
+    return("21+")
+  }
+}
+# counting number of flats sold
+flats_sold_count = count(Merged, flat_type)
+
+flats_sold_count$flat_type = factor(flats_sold_count$flat_type, levels = unique(Merged$flat_type))
+
+```
+
+
+``` {r singapore map and locations, include=FALSE}
+# Getting the Singapore Map
+
+register_google(key = "AIzaSyB7pzY-QLO_gomLCISwdqGLry_sj3jC5Nw")
+singapore <- ggmap::geocode("Singapore")
+singapore
+map <- get_googlemap(center = c(lon = singapore$lon, lat = singapore$lat), zoom = 11)
+
+# goggled search the respective towns coordinates
+AngMoKio =  c(103.8454, 1.3691, "AngMoKio")
+Bedok = c(103.9273, 1.3236, "Bedok")
+Bishan = c(103.8352, 1.3526, "Bishan")
+BukitBatok = c(103.7637, 1.3590, "BukitBatok")
+BukitMerah = c(103.8239, 1.2819, "BukitMerah")
+BukitTimah = c(103.8021, 1.3294, "BukitTimah")
+CentralArea = c(103.8536, 1.2789, "CentralArea")
+ChoaChuKang = c(103.7470, 1.3840, "ChoaChuKang")
+Clementi = c(103.7649, 1.3162, "Clementi")
+Geylang = c(103.8918, 1.3201, "Geylang")
+Hougang = c(103.8863, 1.3612, "Hougang")
+JurongEast = c(103.7436, 1.3329, "JurongEast")
+JurongWest = c(103.7090, 1.3404, "JurongWest")
+Kallang = c(103.8651, 1.3100, "Kallang")
+MarineParade = c(103.8971, 1.3020, "MarineParade")
+Queenstown = c(103.7981, 1.3013, "Queenstown")
+Sengkang = c(103.8914, 1.3868, "Sengkang")
+Serangoon = c(103.8679, 1.3554, "Serangoon")
+Tampines = c(103.9568, 1.3496, "Tampines")
+ToaPayoh = c(103.8563, 1.3343, "ToaPayoh")
+Woodlands = c(103.7890, 1.4382, "Woodlands")
+Yishun = c(103.8354, 1.4304, "Yishun")
+LimChuKang = c(103.7173, 1.4305, "LimChuKang")
+Sembawang = c(103.8185, 1.4491, "Sembawang")
+BukitPanjang = c(103.7719, 1.3774, "BukitPanjang")
+PasirRis = c(103.9474, 1.3721, "PasirRis")
+Punggol = c(103.9072, 1.3984, "Punggol")
+
+#combinning the coordinate
+places = rbind(AngMoKio, Bedok, Bishan, BukitBatok, BukitMerah, BukitTimah, CentralArea, ChoaChuKang, Clementi, Geylang,
+               Hougang, JurongEast, JurongWest, Kallang, MarineParade, Queenstown, Sengkang, Serangoon, Tampines, ToaPayoh,
+               Woodlands, Yishun, LimChuKang, Sembawang, BukitPanjang, PasirRis, Punggol)
+colnames(places) = c("long","lat","ID")
+places = as_tibble(places)
+places$long = as.numeric(places$long)
+places$lat = as.numeric(places$lat)
+
+# cleaning
+as.numeric(Merged$Year)
+Merged2 = Merged %>%
+  mutate(town = ifelse(town == "KALLANG/WHAMPOA", "KALLANG", town))
+placesclean =  places %>%
+  mutate(ID = tolower(ID),  # Convert to lowercase
+         ID = gsub(" ", "", ID))  # Remove spaces
+merged_clean = Merged2 %>%
+  mutate(town = tolower(town),  # Convert to lowercase
+         town = gsub(" ", "", town))
+
+# For visualization purposes in the map
+custom_theme = theme_minimal() +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 16),
+    axis.text = element_text(size = 14),
+    legend.title = element_text(size = 16),
+    legend.text = element_text(size = 14)
+  )
+
+
+```
+
+# Exploratory Analysis
+
+The Graphs below provide an insight with the variables provided from the dataset as well as other data contributing to it as well. This will provide a clearer picture for visualization as there is some missing data that has to be found and analysed. Trends and outliers for the data can be found within these datasets. 
+
+
+The graph below shows the trend and increase in the HDB resale price. The stagnation caused by the global financial crisis in 2008 can also be seen. Uncertainty of BTO projects and increase in private properties caused the HDB price to surge as well from 2020 onwards after COVID.  
+
+```{r Resale HDB Market, echo=FALSE}
+# Averaging the resale price
+mean_data = aggregate(resale_price ~ month, data = Merged, FUN = mean, na.rm = TRUE)
+
+overall_mean = mean(mean_data$resale_price)
+# plotting the graph
+ggplot(mean_data, aes(x = month, y = resale_price)) +
+  geom_line() +
+  labs(title = "Resale HDB Market 1990-2024",
+       x = "Year", y = "Mean Resale Price") +
+  geom_hline(yintercept = overall_mean, linetype = "dashed", color = "red") +
+  annotate("text", x = max(mean_data$month), y = overall_mean,
+           label = paste("Overall Mean:", round(overall_mean, 2)),
+           hjust = -0.1, vjust = 0.5, color = "red") +
+  scale_y_continuous(labels = dollar) + theme_minimal()
+```
+
+The graph below shows the GDP per capita of Singapore over the years. A correlation between the resale HDB market and their GDP can be seen here as both graphs are on an upwards trend. The HDB market tends to follow the trends of Singapore's GDP per capita.
+```{r Singapore GDP 1990-2022, echo=FALSE}
+
+# using data from the world bank
+# making data long and changing year to numeric
+sglong = pivot_longer(data = sgdgdp, cols = 5:ncol(sgdgdp))
+view(sglong)
+colnames(sglong)[5] = "Year"
+colnames(sglong)[6] = "GDP per capita"
+sglong$Year = as.numeric(sglong$Year)
+sglong$`GDP per capita` = as.numeric(sglong$`GDP per capita`)
+subsetsg = sglong[sglong$Year >= 1990 & sglong$Year <= 2022, ]
+# plotting
+ggplot(subsetsg, aes(x = Year, y = `GDP per capita` ,)) +
+  geom_line() +
+  labs(title = "Singapore GDP Over Time (1990-2022)",
+       x = "Year",
+       y = " Singapore GDP per capita") +
+  theme_minimal() + scale_y_continuous(labels = dollar)
+```
+
+The graph below shows the average resale price based on the HDB Storey. It has been grouped from 1-10, 11-20 and 21+ for easier visualization. From the graph, the higher the storey range, the more expensive the resale price for HDB is. This could be due to having a nicer view or reduced noise. Personal preference can also be a factor. Leveraging these factors is important in making decisions on the HDB as supply and demand will affect these prices. 
+
+``` {r Storey Range prices, echo=FALSE}
+
+
+Merged$Storey_Group = sapply(Merged$storey_range, group_storey)
+
+ggplot(Merged, aes(x = reorder(factor(Storey_Group), resale_price), y = resale_price)) +
+  geom_bar(stat = "summary", fun = "mean", fill = "skyblue") +
+  labs(title = "Average Resale Price of HDB Storey",
+       x = "Storey Range",
+       y = "Average Resale Price (SGD)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = scales::dollar)
+```
+
+According to the graph below, the higher the floor area, the more expensive the resale price is. It has 
+been grouped to 0-50, 50-100, and 100+ square meter for better viewing purposes.
+
+``` {r Average price for Floor area, echo=FALSE}
+
+# Plotting
+ggplot(Merged, aes(x = reorder(factor(floor_area_group), resale_price), y = resale_price)) +
+  geom_bar(stat = "summary", fun = "mean", fill = "skyblue") +  
+  labs(title = "Average Resale Price of HDB Floor Area",
+       x = "Floor Area in SQM",
+       y = "Average Resale Price (SGD)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  scale_y_continuous(labels = scales::dollar)
+```
+
+The different types of flat models can be seen, and it has been arranged in ascending order. Type S2 is the most expensive model while the new generation is the least. The different layout or corner units can often fetch an increased price as well. Investors or buyers should evaluate the differences before making any decision. Newer models made are also more expensive as well.
+
+``` {r Average prices for floor models, echo=FALSE}
+# Plotting
+ggplot(Merged, aes(x = reorder(factor(flat_model), resale_price), y = resale_price)) +
+  geom_bar(stat = "summary", fun = "mean", fill = "skyblue") + 
+  labs(title = "Average Resale Price of HDB Flat Models",
+       x = "Flat Model",
+       y = "Average Resale Price (SGD)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_y_continuous(labels = dollar)
+```
+
+From the graph below, the different kinds of flat type are shown and the number of HDB sold according to their type. The 4-room flat type is the most popular kind of flat followed by the 3 room (349159 and 294092 sold respectively). The 1 room and multi-generational flat sold is very small (only 1300 and 540) respectively from 1990-2024. This can implicate that the demand of 4-room and 3-room flats is the most popular in Singapore.
+
+``` {r Number of Flats sold by flat type, echo=FALSE}
+# Plotting
+ggplot(flats_sold_count, aes(x = flat_type, y = n)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Number of Flats Sold by Flat Type, 1990-2024",
+       x = "Flat Type",
+       y = "Number of Flats Sold") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = comma) 
+```
+
+
+Below is a Map of Singapore of HDB resale prices from 1990-2000, 2000-2010, 2010-2020, and 2020-2024. The darker the color, the more expensive the resale price is. From this map, the expensive resale price are scattered throughout Singapore.  
+
+```{r Singapore Map 1990-2000, echo= FALSE}
+# Filtering the years
+data_1990_2000 = merged_clean %>%
+  filter(Year %in% 1990:2000)
+
+# Finding the average 
+mean_resale_price_1990 = data_1990_2000 %>%
+  group_by(town) %>%
+  summarise(mean_resale_price = mean(resale_price, na.rm = TRUE))
+
+# Merging the data
+merged_datamap_1990 = left_join(mean_resale_price_1990, placesclean, by = c("town" = "ID"))
+merged_datamap_1990$long = as.numeric(merged_datamap_1990$long)
+merged_datamap_1990$lat = as.numeric(merged_datamap_1990$lat)
+
+# Plotting
+SGmap1990 = ggmap(map) +
+  geom_point(data = merged_datamap_1990, aes(x = long, y = lat, color = mean_resale_price), size = 4, alpha = 0.6) +
+  scale_color_gradient(low = "lightyellow", high = "darkred", labels = scales::dollar_format()) +
+  labs(color = "Resale Price") +  
+  ggtitle("Resale Prices in 1990-2000") +  
+  xlab("Longitude") + 
+  ylab("Latitude") + custom_theme     
+SGmap1990
+```
+
+From the map below, resale prices are starting to increase particularly in the central and east region of Singapore. Inflation and population growth is a factor in these as Singapore advances.
+```{r Singapore Map 2000-2010, echo=FALSE}
+
+data_2000_2010 = merged_clean %>%
+  filter(Year %in% 2000:2010)
+
+mean_resale_price_2000 = data_2000_2010 %>%
+  group_by(town) %>%
+  summarise(mean_resale_price = mean(resale_price, na.rm = TRUE))
+
+merged_datamap_2000 = left_join(mean_resale_price_2000, placesclean, by = c("town" = "ID"))
+merged_datamap_2000$long = as.numeric(merged_datamap_2000$long)
+merged_datamap_2000$lat = as.numeric(merged_datamap_2000$lat)
+
+SGmap2000 = ggmap(map) +
+  geom_point(data = merged_datamap_2000, aes(x = long, y = lat, color = mean_resale_price), size = 4, alpha = 0.6) +
+  scale_color_gradient(low = "lightyellow", high = "darkred", labels = scales::dollar_format()) +
+  labs(color = "Resale Price") +  
+  ggtitle("Resale Prices in 2000-2010") +  
+  xlab("Longitude") +  
+  ylab("Latitude") + custom_theme  
+SGmap2000
+```
+
+An interesting insight found from here is that the resale price from 1990-2010 was generally spread out with no grouping of the highest resale price. From 2010-2020 however, the highest average resale price tends to be around the central area. The urban development and economic opportunities could be seen with these maps as people moved towards downtown areas. This causes the resale price in these areas to increase due to demand and it is shown in this map.
+
+```{r Singapore Map 2010-2020, echo=FALSE}
+
+data_2010_2020 = merged_clean %>%
+  filter(Year %in% 2010:2020)
+mean_resale_price_2010 = data_2010_2020 %>%
+  group_by(town) %>%
+  summarise(mean_resale_price = mean(resale_price, na.rm = TRUE))
+
+merged_datamap_2010 = left_join(mean_resale_price_2010, placesclean, by = c("town" = "ID"))
+merged_datamap_2010$long = as.numeric(merged_datamap_2010$long)
+merged_datamap_2010$lat = as.numeric(merged_datamap_2010$lat)
+
+
+SGmap2010 = ggmap(map) +
+  geom_point(data = merged_datamap_2010, aes(x = long, y = lat, color = mean_resale_price), size = 4, alpha = 0.6) +
+  scale_color_gradient(low = "lightyellow", high = "darkred", labels = scales::dollar_format()) +
+  labs(color = "Resale Price") + 
+  ggtitle("Resale Prices in 2010-2020") + 
+  xlab("Longitude") +  
+  ylab("Latitude") + custom_theme    
+
+SGmap2010
+```
+
+The central area of Singapore has the most expensive resale price. More development and urbanisation can be seen, and it is a massive contrast from the 1990-2000 dataset. This shows the massive growth Singapore has had and the prices of HDB reflects these changes.
+
+``` {r Singapore map 2020-2024, echo=FALSE}
+
+data_2020_2024 = merged_clean %>%
+  filter(Year %in% 2020:2024)
+
+mean_resale_price_2024 = data_2020_2024 %>%
+  group_by(town) %>%
+  summarise(mean_resale_price = mean(resale_price, na.rm = TRUE))
+
+
+
+merged_datamap_2024 = left_join(mean_resale_price_2024, placesclean, by = c("town" = "ID"))
+merged_datamap_2024$long = as.numeric(merged_datamap_2024$long)
+merged_datamap_2024$lat = as.numeric(merged_datamap_2024$lat)
+
+
+SGmap2024 = ggmap(map) +
+  geom_point(data = merged_datamap_2024, aes(x = long, y = lat, color = mean_resale_price), size = 4, alpha = 0.6) +
+  scale_color_gradient(low = "lightyellow", high = "darkred", labels = scales::dollar_format()) +
+  labs(color = "Resale Price") +  
+  ggtitle("Resale Prices in 2020-2023") +  
+  xlab("Longitude") +  
+  ylab("Latitude") + custom_theme     
+
+SGmap2024
+```
+
+With the Singapore map above, the resale price of HDB varies within their location. Location that is close to amenities, MRT, and quality of the neighborhood play a big role in their price. Sellers and buyers looking to make decisions should access these factors before deciding. HDB located near the center of Singapore have a increase in price as the central area of Singapore is more expensive. Generally, the location near the east and central area tends to have a higher price and stay relevant in their price as well. Urbanization and development can be seen and how these have affected prices over the years. Income level of Singapore in certain areas also plays a part in which areas are being affected.  
+
+A key indicator of this is Bukit Timah, which has the highest average resale price throughout the years. As it is located near good primary schools, parents would also often pay a premium price for the location. It is also near good class bungalows which are often good neighborhoods which increase the price.  
+
+This graph below shows the number of flat models sold according to their model in Bukit Timah. The improved model sold the most while Adjoined flats sold the least.
+
+``` {r Bukit Timah type of flat models sold, echo=FALSE, warning=FALSE}
+# Getting Bukit Timah Data 
+
+bukit_timah_data = merged_clean[merged_clean$town == "bukittimah", ]
+
+# Counting the number of flat model
+model_counts <- bukit_timah_data %>%
+  group_by(flat_model, Year) %>%
+  summarize(count = n(), .groups = "drop") 
+
+# Plotting
+ggplot(model_counts, aes(x = flat_model, y = count)) +
+  geom_bar(stat = "identity", fill = "skyblue", color = "transparent") +
+  labs(title = "Bukit Timah Flat Models Sold",
+       x = "Flat Model",
+       y = "Number of Sales") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+The graph below shows the average price for flat models over time.
+```{r Bukit Timah Avg resale price of flat models, echo=FALSE, warning=FALSE}
+
+# Finding Average Price
+model_prices_bukit <- bukit_timah_data %>%
+  group_by(flat_model, Year, .drop = TRUE) %>%
+  summarize(avg_price = mean(resale_price), .groups = "drop")
+# Plotting
+ggplot(model_prices_bukit, aes(x = Year, y = avg_price, color = flat_model)) +
+  geom_line() +
+  labs(title = " Bukit Timah Flat Models Over Time",
+       x = "Year",
+       y = "Average Resale Price",
+       color = "Flat Model") +  scale_y_continuous(labels = dollar) +
+  theme_minimal()
+```
+
+From the 2 graphs generated for Bukit Timah, the Improved flat models sell the most and averages very high compared to the different models sold. Although the improved models average in Singapore is only $300,000+, in Bukit Timah it is a completely different case. This is due to their prime location and how much affect location can have on their resale price. Bukit Timah is also located near central area of Singapore as well as parks and good amenities and it shows that their price has stayed relatively high throughout the years.  
+
+Government implications can also affect prices. New offices and homes near Jurong Lake District are being planned and this can affect prices for the HDB resale price. In the next 10-15 years, housing prices will be affected. As offices and housing are being built, people will be looking for relocation, especially people in the east as offices move towards west. However, a future potential outlook like population growth and government initiatives could also affect these prices.
+
+The graph below shows the location of the towns in the East vs West of HDB resale prices. A text is used to name the towns on the map. From the map below, prices in the East are relatively more expensive compared to the west. East is generally more known to be an exclusive and high end area and it shows in this map below.
+
+``` {r East vs West, echo=FALSE}
+
+# Finding East and Wesr towns
+gov_map = merged_datamap_2024 %>%
+  filter(town %in% c("jurongeast", "jurongwest", "clementi", "pasirris", "tampines", "marineparade", "choachukang", "woodlands", "bukitbatok",
+                     "geylang", "kallang", "bedok"))
+
+
+#Plotting
+gov2024 = ggmap(map) +
+  geom_point(data = gov_map, aes(x = long, y = lat, color = mean_resale_price), size = 4, alpha = 0.6) +
+  scale_color_gradient(low = "lightyellow", high = "darkred", labels = scales::dollar_format()) +
+  labs(color = "Resale Price") +
+  ggtitle("East vs West Prices") +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  custom_theme
+# Adding labels for visualization to be easier
+gov2024 <- gov2024 +
+  geom_text(data = gov_map, aes(x = long, y = lat, label = town), size = 3, color = "black", fontface = "bold", hjust = 0, vjust = 0)
+gov2024
+```
+
+If people plan to relocate, there would be factors they need to consider. Below is a box plot comparing the cheapest town in the East compared to the West. The flat type is chosen as it is likely that families would be the ones planning to relocate. An interesting insight is that the 2 room flats in Jurong West are more expensive compared to Bedok.
+
+``` {r Factors to consider from East and West, echo=FALSE}
+
+# Filtering Jurongwest and Bedok
+westdata = data_2020_2024 %>%
+  filter(town == "jurongwest")
+
+eastdata <- data_2020_2024 %>%
+  filter(town == "bedok")
+combined_data = rbind(mutate(westdata, region = "jurongwest"), mutate(eastdata, region = "bedok"))
+# Plotting
+
+ggplot(combined_data, aes(x = flat_type, y = resale_price, fill = region)) +
+  geom_boxplot() +
+  labs(title = "Comparison of Resale Prices by Flat Type",
+       x = "Flat Type",
+       y = "Resale Price",
+       fill = "Region") +
+  theme_minimal() + scale_y_continuous(labels = dollar)
+```
+
+With these prices, people can consider buying a HDB in the west and relocate there before prices start to surge in the west.
+
+
+# Conclusion
+
+
+
+Key findings from the analysis found that there are many variables to consider that can influence resale prices. Factors such as income and GDP play a massive role in the housing market. The different types of HDBs sold, which flat type has the most demand all influence the HDB prices. The maps highlighted the differences in pricing in areas and focus on Bukit Timah to find out why it has averaged the highest price over the years. Location being a massive factor highlighted by the disparity of the east region compared to the west. Implications by the government play a massive role in the future and analysing historic data could help us prepare. These graphs provided an overview of the variables and observations of the dataset. All these factors influence the pricing of the HDB resale price and have been explored by the graphs above. Understanding these variables sets the stage for further analysis and key data insights can be explored from it. By cleaning the data, inconsistencies and errors were addressed for the dataset’s reliability. Buyers and investors could use this visualization and make informed decisions when purchasing a unit.
+
+
+## Reference
+
+Dollarback Mortgage. (n.d.). Rise in HDB prices: Factors. Dollarback Mortgage. Retrieved from https://dollarbackmortgage.com/blog/rise-in-hdb-prices-factors/
+
+OfficeFinder. (n.d.). Singapore govt looking to build office tower in JLD. OfficeFinder. Retrieved from https://officefinder.com.sg/singapore-govt-looking-to-build-office-tower-in-jld/
+
+Xue, M. (2021, June 30). Monthly household income in Singapore: Comparison by district where you stay. Seedly Blog. https://blog.seedly.sg/monthly-household-income-singapore-comparison-district-where-you-stay/
+
+World Bank. (n.d.). GDP (current US$) - Singapore. The World Bank. https://data.worldbank.org/indicator/NY.GDP.MKTP.CD?locations=SG
+
+
+
