@@ -174,7 +174,7 @@ flats_sold_count$flat_type = factor(flats_sold_count$flat_type, levels = unique(
 ``` {r singapore map and locations, include=FALSE}
 # Getting the Singapore Map
 
-register_google(key = "AIzaSyB7pzY-QLO_gomLCISwdqGLry_sj3jC5Nw")
+register_google(key = "--")
 singapore <- ggmap::geocode("Singapore")
 singapore
 map <- get_googlemap(center = c(lon = singapore$lon, lat = singapore$lat), zoom = 11)
