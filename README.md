@@ -20,3 +20,8 @@ This dataset is now optimized for detailed analysis and visualization, providing
 
 ## Map Plot from 1990-2024
 
+- Urbanisation can be seen as people started moving into the the central area of Singapore. Massive growth of singapore can be seen and the prices reflect these changes.
+- Demand for HDB in these areas can be seen as economic opportunites in these areas were growing
+
+# Conclusion
+Key findings from the analysis found that there are many variables to consider that can influence resale prices. Factors such as income and GDP play a massive role in the housing market. The different types of HDBs sold, which flat type has the most demand all influence the HDB prices. The maps highlighted the differences in pricing in areas as urbanisation took place. Location being a massive factor in which the prices were affected can also be seen in the graphs. These graphs provided an overview of the variables and observations of the dataset. All these factors influence the pricing of the HDB resale price and have been explored by the graphs above. Understanding these variables sets the stage for further analysis and key data insights can be explored from it. By cleaning the data, inconsistencies and errors were addressed for the dataset’s reliability. Buyers and investors could use this visualization and make informed decisions when purchasing a unit.
